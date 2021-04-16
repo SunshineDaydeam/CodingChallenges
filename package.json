@@ -1,0 +1,11 @@
+{
+  "name": "codingchallenges",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "fizzBuzz": "node ./fizzBuzz/fizzBuzz.js",
+    "warehouse": "node ./warehouse/warehouse.js",
+    "bowling": "node ./bowlingScore/index.js"
+  }
+}
