@@ -1,7 +1,5 @@
 const {testCases} = require ('./testCases');
 
-// yarn run bowling
-
 // Score Calculator
 function calculateScore(rolls){
 
@@ -29,6 +27,7 @@ function calculateScore(rolls){
     currentRound ++;
   }
   function throwRegular(roll, i, count){
+    // console.log(count)
     if (count === 1){
       rounds[currentRound].roll1 = roll
       rounds[currentRound].totalScore = roll
@@ -46,8 +45,12 @@ function calculateScore(rolls){
   }
   
   rolls.forEach( (roll, i) => {
+    const roundCumScore = rounds.map( r => r.total).reduce((pv, cv) => pv + cv, 0);
+    // console.log("roll #", currentRound, "of ", roll, roundCumScore)
 
     roll = parseInt(roll,10)
+
+    // console.log(rounds[currentRound].roll1)
 
     // After 10 rounds Stop
     if (currentRound === 10){
@@ -66,7 +69,7 @@ function calculateScore(rolls){
       if (roll === 10) throwStrike(roll, i)
       
       // Regular Throw (Non Strike)
-      else throwRegular(roll, i)
+      else throwRegular(roll, i, 1)
 
     }
 
@@ -78,8 +81,7 @@ function calculateScore(rolls){
 
       // Regular Throw (Non Spare)
       else {
-        throwRegular(roll, i)
-
+        throwRegular(roll, i, 2)
       }
     }
   })
@@ -91,27 +93,93 @@ function calculateScore(rolls){
   else return totalScore;
 }
 
-// Function Test
-function testFunction(){
-  let totalCount = testCases.length;
-  let passes = 0;
-  let fails = 0;
-  let ratio = ""
+function calculateScore2(rolls, expected){
+  let runningScore = 0;
+  let round = 1;
+  let rc = 1;
+  let rounds = []
 
-  testCases.forEach( tc => {
-    let result = calculateScore(tc.rolls)
-    if (result === tc.expectedResult){
-      passes ++;
+
+  for (let i = 0; i < rolls.length; i++){
+    let roll = rolls[i]
+
+    // First Roll Of a Round
+    if (rc == 1){
+      let scores = { r1: null, r2: null, e1: null, e2: null, strike: false, spare: false, totalScore: null,}
+      
+      // If Strike
+      if (roll == 10){ 
+        scores.r1 = 10; 
+        rc = 1; 
+        scores.strike = true;
+        round++;
+      }
+      // Not Strike
+      else { scores.r1 = roll; rc = 2 }
+      rounds.push(scores)
     }
+    
+    // Second Roll of Round
     else {
-      fails ++;
+      let currRound = rounds[rounds.length - 1]
+      // console.log(rounds[rounds.length -1])
+
+      rounds[rounds.length-1].r2 = roll
+
+      // // If Spare
+      // if (currRound.r1 + roll === 10){
+
+      // }
+
+      // // Not Spare
+      // else (currRound.r1 + roll === 10){
+       
+      // }
+      round ++;
+
     }
-  })
+  }
+
+  console.log(rounds)
   console.log(`
-Test Complete
-${(passes / totalCount) * 100 + "%"} success rate based on ${totalCount} tests
-`)
+    Current Round : ${round}
+    Total Score : ${rounds.map( r => r.totalScore).reduce( (a, b) => a+b)}
+  `)
+
 }
 
-testFunction()
+// Test Method
+function runTest(method, tests){
+  let passes = 0
+  let fails = 0
+  let failures = [];
+
+  tests.forEach((element, i) => {
+    let result = method(element.rolls)
+    if (result === element.expectedResult){
+      passes++;
+    }
+    else {
+      fails++;
+      failures.push({...element, o: result});
+    }
+  });
+
+  const passDisplay = "\x1b[32m" + ((passes/tests.length) * 100).toFixed(2) + "% Tests Passing"
+  const failDisplay = '\033[31m' + fails + ' failures \x1b[0m'
+  const failArr = failures.map( f => {
+    return `${JSON.stringify(f.rolls)} returned ${f.o} but expected ${f.expectedResult}`
+  })
+
+  return console.log(`
+    ${passDisplay}
+    ${failDisplay}
+
+    ${JSON.stringify(failArr)}
+  `)
+
+}
+
+// runTest(calculateScore2, testCases)
+calculateScore2([10,2,3], 15)
 

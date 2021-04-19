@@ -4,8 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "fizzBuzz": "node ./fizzBuzz/fizzBuzz.js",
-    "warehouse": "node ./warehouse/warehouse.js",
-    "bowling": "node ./bowlingScore/index.js"
+    "99bottles-js": "node ./random/99bottles.js",
+    "bowling-js": "node ./bowlingScore/index.js",
+    "fizzbuzz-js": "node ./fizzBuzz/fizzBuzz.js",
+    "lottery-js": "node ./numberGenerators/lotteryNumbers.js",
+    "merge-js": "node ./algorithms/mergeSort.js",
+    "multiplication-js": "node ./algorithms/multiplication.js", 
+    "references-js": "node ./references/javascript.js",
+    "references-py": "python ./references/python.py",
+    "warehouse-js": "node ./warehouse/warehouse.js"
   }
 }
